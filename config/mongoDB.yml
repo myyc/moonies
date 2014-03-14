@@ -1,0 +1,24 @@
+Default: &defaults
+  user: moonies
+  password: moonies
+  host: localhost
+  database: moonies
+  connections: 10
+
+Development:
+  <<: *defaults
+
+Testing:
+  database: moonies_test
+  <<: *defaults
+
+Staging:
+  database: moonies_staging
+  connections: 100
+  <<: *defaults
+
+Production:
+  database: moonies_production
+  connections: 100
+  host: localhost
+  <<: *defaults

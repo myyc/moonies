@@ -1,0 +1,7 @@
+$newline never
+<!doctype html>
+<html>
+  <head>
+    ^{pageHead pc}
+  <body>
+    ^{pageBody pc}
