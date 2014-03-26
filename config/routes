@@ -7,3 +7,4 @@
 / HomeR GET POST
 /amirich/#Text AmIRichR GET
 
+/monies/#Text MoniesR GET
