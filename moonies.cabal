@@ -21,6 +21,8 @@ library
                      Settings.Development
                      Handler.AmIRich
                      Handler.Monies
+                     Gatherers.Private
+                     Gatherers.Morningstar
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT
@@ -76,7 +78,6 @@ library
                  , HTTP                          >= 4000.0
                  , mongoDB                       >= 1.4
                  , bson                          >= 0.2
-                 , configurator                  >= 0.2
 
 executable         moonies
     if flag(library-only)
