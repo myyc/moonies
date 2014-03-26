@@ -1,5 +1,5 @@
 name:              moonies
-version:           0.0.0
+version:           0.0.1.666
 cabal-version:     >= 1.8
 build-type:        Simple
 
@@ -21,6 +21,7 @@ library
                      Settings.Development
                      Handler.Home
                      Handler.AmIRich
+                     Handler.Monies
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT
@@ -71,6 +72,12 @@ library
                  , monad-logger                  >= 0.3        && < 0.4
                  , fast-logger                   >= 2.1.4      && < 2.2
                  , wai-logger                    >= 2.1        && < 2.2
+                 , time                          >= 1.0
+                 , old-locale                    >= 1.0
+                 , HTTP                          >= 4000.0
+                 , mongoDB                       >= 1.4
+                 , bson                          >= 0.2
+                 , configurator                  >= 0.2
 
 executable         moonies
     if flag(library-only)
