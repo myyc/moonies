@@ -11,7 +11,7 @@ import Language.Haskell.TH.Syntax
 import Database.Persist.MongoDB (MongoConf)
 import Yesod.Default.Config
 import Yesod.Default.Util
-import Data.Text (Text)
+import Data.Text (Text, pack)
 import Data.Yaml
 import Control.Applicative
 import Settings.Development
@@ -72,5 +72,5 @@ data Extra = Extra
 
 parseExtra :: DefaultEnv -> Object -> Parser Extra
 parseExtra _ o = Extra
-    <$> o .:  "copyright"
-    <*> o .:? "analytics"
+    <$> o .:  pack "copyright"
+    <*> o .:? pack "analytics"

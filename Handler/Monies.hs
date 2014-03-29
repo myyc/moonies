@@ -7,21 +7,15 @@ import Data.Time.Format (formatTime)
 import System.Locale (defaultTimeLocale)
 import qualified Data.Text as T
 import Network.HTTP as H (simpleHTTP, getRequest, getResponseBody)
-import Database.MongoDB
 import Data.Maybe (catMaybes)
 import Prelude (init, tail, head)
 import Gatherers.Morningstar
+import Gatherers.MongoDB
 
 getMoniesR :: Text -> Handler Import.Value
 getMoniesR curr = do
-  pipe <- liftIO $ runIOE $ connect $ host "127.0.0.1"
-  e <- liftIO $ access pipe master "funds" $
-       find (select [] "private") >>= rest
-  liftIO $ close pipe
-  let f = case e of
-        Left _ -> []
-        Right ds -> map (\d -> cast' (valueAt "isin" d) :: Maybe Text) ds
-  a <- liftIO $ mapM (getLastValues curr) (catMaybes f)
+  isins <- liftIO getIsins
+  a <- liftIO $ mapM (getLastValues curr) isins
   return $ toJSON (show a)
 
 tuplify :: [Float] -> (Integer, Float)
@@ -33,7 +27,7 @@ getLastValues :: Text -> Text -> IO [(Integer, Float)]
 getLastValues curr isin = do
   ct <- liftIO getCurrentTime
   let today = utctDay ct
-      endDate = formatTime defaultTimeLocale "%F" (today)
+      endDate = formatTime defaultTimeLocale "%F" today
       startDate = formatTime defaultTimeLocale "%F" (addDays (-7) today)
       currency = T.unpack curr
       url = getMorningStarURL currency startDate endDate (T.unpack isin)
