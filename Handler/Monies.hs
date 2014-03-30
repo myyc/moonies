@@ -6,9 +6,9 @@ import Import
 import Data.Time.Clock (utctDay, getCurrentTime)
 import Data.Time.Calendar (addDays)
 import Data.List (last)
---import qualified Data.Text as T
 import Gatherers.Morningstar
 import Gatherers.MongoDB
+import Control.Concurrent (forkIO)
 
 import GHC.Generics (Generic)
 

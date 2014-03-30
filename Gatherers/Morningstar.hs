@@ -10,6 +10,7 @@ import System.Locale (defaultTimeLocale)
 import qualified Data.Text as T
 import Network.HTTP as H (simpleHTTP, getRequest, getResponseBody)
 import Prelude (init, tail, head)
+import Gatherers.MongoDB (getCachedTS, cacheTS)
 
 import GHC.Generics (Generic)
 
@@ -36,9 +37,13 @@ getMorningStarValues curr isin startDate endDate = do
       startDateStr = formatTime defaultTimeLocale "%F" startDate
       currency = T.unpack curr
       url = getMorningStarURL currency startDateStr endDateStr (T.unpack isin)
-  res <- liftIO $ simpleHTTP (H.getRequest url)
-  body <- liftIO $ getResponseBody res
-  liftIO $ putStrLn url
-  let a = read body :: [[Double]]
-      b = map xyify a
-  return b
+  cachedTS <- getCachedTS $ T.pack url
+  case cachedTS of
+        [[]] -> do
+          res <- liftIO $ simpleHTTP (H.getRequest url)
+          body <- liftIO $ getResponseBody res
+          liftIO $ putStrLn url
+          let a = read body :: [[Double]]
+          liftIO $ cacheTS (T.pack url) a
+          return $ map xyify a
+        v -> return $ map xyify v

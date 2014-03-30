@@ -20,12 +20,10 @@ getAmIRichR curr = defaultLayout $ do
      [hamlet|
         <div class="container" id="maincont">
            <div class="row main text-center">
-              <span class="rg" id="bigtotal">123
+              <span class="rg" id="bigtotal">
            <div class="row">
                <div class="col-lg-6 text-center" id="lcol">
                   <span class="rg perc" id="lperc">
                <div class="col-lg-6 text-center" id="rcol">
                   <ul id="rpercs">
-                     <li><span class="liperc tperc">
-                     <li><span class="liperc tperc">
             |]

@@ -1,8 +1,8 @@
 Moonies
 =======
 
-~~Since I am a huge wanker I decided to rewrite monies in Haskell. When it reaches~~
-~~even half of the functionality the Python version has we'll all have a party.~~
+~~Since I am a huge wanker I decided to rewrite monies in Haskell. When it reaches
+even half of the functionality the Python version has we'll all have a party.~~
 
 ~~In the likely event that it doesn't, don't use this.~~
 
@@ -20,12 +20,13 @@ Warnings
 
 1. The code requires a bunch of secrets to compile and to work, it's mildly unusable
 at the moment unless you have the "private" objects set up.
-2. Should you have those secrets, there is no caching, so if you're flooding somebody's
-website with your calls... well, you know.
+2. ~~Should you have those secrets, there is no caching, so if you're flooding somebody's
+website with your calls... well, you know.~~ There is some caching implementation now
+so let's skip this.
 
 TODO
 ====
 
 * Implement some "dummy data" interface so that other people can check this out.
-* Caching, seriously, what the fuck.
+* ~~Caching, seriously, what the fuck.~~
 * Fix flymake.

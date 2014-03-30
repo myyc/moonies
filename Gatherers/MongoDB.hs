@@ -5,7 +5,7 @@ module Gatherers.MongoDB where
 import Import
 import Database.MongoDB
 import Data.Maybe (catMaybes, isNothing, fromJust, fromMaybe)
---import Data.List (head)
+import Data.Time.Clock (getCurrentTime, diffUTCTime, UTCTime)
 import qualified Data.Text as T
 
 import GHC.Generics (Generic)
@@ -13,6 +13,9 @@ import GHC.Generics (Generic)
 data Figures = Figures {weig :: Double, eur :: Double, orig :: Double} deriving (Show, Generic)
 instance FromJSON Figures
 instance ToJSON Figures
+
+getConnection :: IO Pipe
+getConnection = (runIOE . connect . host) "127.0.0.1"
 
 justFiguresify :: Maybe Double -> Maybe Double -> Maybe Double -> Maybe Figures
 justFiguresify w e o
@@ -29,7 +32,7 @@ justFiguresify w e o
 -- }
 dumpPrivate :: IO (Either Failure [Document])
 dumpPrivate = do
-  pipe <- liftIO $ runIOE $ connect $ host "127.0.0.1"
+  pipe <- liftIO getConnection
   e <- access pipe master "funds" $
        find (select [] "private") >>= rest
   liftIO $ close pipe
@@ -55,7 +58,7 @@ getOrigSum = do
 
 getAssets :: Text -> IO Figures
 getAssets isin = do
-  pipe <- liftIO $ runIOE $ connect $ host "127.0.0.1"
+  pipe <- liftIO getConnection
   cur <- access pipe master "funds" $
        find (select ["isin" =: isin] "private") >>= rest
   liftIO $ close pipe
@@ -71,7 +74,7 @@ getAssets isin = do
 
 getFromMD :: Text -> Text -> IO Text
 getFromMD isin key = do
-  pipe <- liftIO $ runIOE $ connect $ host "127.0.0.1"
+  pipe <- liftIO getConnection
   doc <- access pipe master "funds" $
        findOne (select ["isin" =: isin] "metadata")
   let f = case doc of
@@ -87,3 +90,45 @@ getAbbr isin = getFromMD isin "abbr"
 
 getCurr :: Text -> IO Text
 getCurr isin = getFromMD isin "currency"
+
+-- cache! it's shit, but it works now. until i expand the mining section.
+validateDoc :: Document -> UTCTime -> Maybe [[Double]]
+validateDoc d now = if valid d now then data' else Just [[]]
+  where data' = cast' (valueAt "data" d) :: Maybe [[Double]]
+        valid d' now' = case (cast' (valueAt "_id" d') :: Maybe ObjectId) of
+          Nothing -> False
+          Just oid -> diffUTCTime now' (timestamp oid) < 600
+
+getCachedTS :: Text -> IO [[Double]]
+getCachedTS url = do
+  ct <- liftIO getCurrentTime
+  pipe <- liftIO getConnection
+  doc <- access pipe master "funds" $
+       findOne (select ["url" =: url] "mscache")
+  let f = case doc of
+        Left _ -> Just [[]]
+        Right d -> case d of
+          Nothing -> Just [[]]
+          Just d' -> validateDoc d' ct
+      t = fromMaybe [[]] f
+  return t
+
+cacheTS :: Text -> [[Double]] -> IO ()
+cacheTS url ts = do
+  pipe <- liftIO getConnection
+  res <- access pipe master "funds" $
+         Database.MongoDB.insert "mscache" ["url" =: url, "data" =: ts]
+  case res of
+    Left _ -> return ()
+    Right _ -> return ()
+
+-- not used yet because I can't figure out how to trigger this in non-IO
+uncacheTS :: Database.MongoDB.Value -> IO ()
+uncacheTS oid = do
+  pipe <- liftIO getConnection
+  res <- access pipe master "funds" $
+         Database.MongoDB.delete (select ["_id" := oid] "mscache")
+  case res of
+    Left _ -> return ()
+    Right _ -> return ()
+-- end of the cache functions
