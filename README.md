@@ -28,3 +28,4 @@ TODO
 
 * Implement some "dummy data" interface so that other people can check this out.
 * Caching, seriously, what the fuck.
+* Fix flymake.
