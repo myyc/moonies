@@ -104,7 +104,7 @@ getCachedTS url = do
   ct <- liftIO getCurrentTime
   pipe <- liftIO getConnection
   doc <- access pipe master "funds" $
-       findOne (select ["url" =: url] "mscache")
+       findOne (select ["url" =: url] "mscache") {sort = ["_id" =: (-1 :: Int)]}
   let f = case doc of
         Left _ -> Just [[]]
         Right d -> case d of
