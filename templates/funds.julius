@@ -1,0 +1,42 @@
+$(function () {
+    startoverlay();
+    $.getJSON("/getfunds/EUR", function (data) {
+        nv.addGraph(function () {
+            var chart = nv.models.lineWithFocusChart();
+
+            chart.xAxis.tickFormat(function (d) {
+                return d3.time.format("%-d.%-m.%Y")(new Date(d * 1000))
+            });
+
+            chart.x2Axis.tickFormat(function (d) {
+                return d3.time.format("%-d.%-m.%Y")(new Date(d * 1000))
+            });
+
+            chart.yAxis.tickFormat(d3.format(",.2f"));
+
+            chart.y2Axis.tickFormat(d3.format(",.2f"));
+
+            chart.forceY(_.reduce(data, function(n, d) {
+                console.log(n)
+                return Math.min(n, _.reduce(d.xys, function(m, e) {
+                    return Math.min(m, e.y);
+                }, n));
+            }, data[0].xys[0].y)*0.8);
+
+            d3.select('#chart svg')
+                .datum(_.map(data, function(d) {
+                    return {
+                        key: d.abbr,
+                        values: d.xys
+                    }
+                }))
+                .transition().duration(500)
+                .call(chart);
+
+            nv.utils.windowResize(chart.update);
+
+            return chart;
+        });
+        stopoverlay();
+    })
+})

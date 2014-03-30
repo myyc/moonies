@@ -21,6 +21,9 @@ library
                      Settings.Development
                      Handler.AmIRich
                      Handler.Monies
+                     Handler.Home
+                     Handler.Funds
+                     Handler.FundsTS
                      Gatherers.Private
                      Gatherers.Morningstar
                      Gatherers.MongoDB

@@ -1,39 +1,48 @@
+{-# LANGUAGE DeriveGeneric #-}
+
 module Handler.Monies where
 
 import Import
 import Data.Time.Clock (utctDay, getCurrentTime)
 import Data.Time.Calendar (addDays)
-import Data.Time.Format (formatTime)
-import System.Locale (defaultTimeLocale)
-import qualified Data.Text as T
-import Network.HTTP as H (simpleHTTP, getRequest, getResponseBody)
-import Data.Maybe (catMaybes)
-import Prelude (init, tail, head)
+import Data.List (last)
+--import qualified Data.Text as T
 import Gatherers.Morningstar
 import Gatherers.MongoDB
+
+import GHC.Generics (Generic)
+
+data Monies = Monies {currsum :: Double, origsum :: Double, spec :: [AbbRet]} deriving (Show, Generic)
+instance FromJSON Monies
+instance ToJSON Monies
+
+data AbbRet = AbbRet {isin :: Text, abbr :: Text, ret :: Double} deriving (Show, Generic)
+instance FromJSON AbbRet
+instance ToJSON AbbRet
 
 getMoniesR :: Text -> Handler Import.Value
 getMoniesR curr = do
   isins <- liftIO getIsins
-  a <- liftIO $ mapM (getLastValues curr) isins
-  return $ toJSON (show a)
+  let getAbbrAndRet isin'' = do
+        asset <- getAssets isin''
+        abbr' <- getAbbr isin''
+        curr' <- getCurr isin''
+        price <- getLastPrice curr' isin''
+        let bef = orig asset
+            aft = weig asset * price
+        return $ AbbRet isin'' abbr' ((aft-bef)/aft)
+  let getSum isin'' = do
+        asset <- getAssets isin''
+        price <- getLastPrice curr isin''
+        return $ weig asset * price
+  a <- liftIO $ mapM getAbbrAndRet isins
+  b <- liftIO $ mapM getSum isins
+  origsum' <- liftIO getOrigSum
+  return $ toJSON $ Monies (sum b) origsum' a
 
-tuplify :: [Float] -> (Integer, Float)
-tuplify [] = (0, 0)
-tuplify [x] = (0, x)
-tuplify a = (round $ head a, a !! 1)
-
-getLastValues :: Text -> Text -> IO [(Integer, Float)]
-getLastValues curr isin = do
+getLastPrice :: Text -> Text -> IO Double
+getLastPrice curr isin' = do
   ct <- liftIO getCurrentTime
   let today = utctDay ct
-      endDate = formatTime defaultTimeLocale "%F" today
-      startDate = formatTime defaultTimeLocale "%F" (addDays (-7) today)
-      currency = T.unpack curr
-      url = getMorningStarURL currency startDate endDate (T.unpack isin)
-  res <- liftIO $ simpleHTTP (H.getRequest url)
-  body <- liftIO $ getResponseBody res
-  liftIO $ putStrLn url
-  let a = read body :: [[Float]]
-      b = map tuplify a
-  return b
+  v <- getMorningStarValues curr isin' (addDays (-7) today) today
+  (return . y . last) v

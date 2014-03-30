@@ -3,6 +3,9 @@
 /favicon.ico FaviconR GET
 /robots.txt RobotsR GET
 
+/ HomeR GET
 /amirich/#Text AmIRichR GET
+/funds/#Text FundsR GET
 
 /monies/#Text MoniesR GET
+/getfunds/#Text FundsTSR GET
