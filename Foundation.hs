@@ -1,3 +1,6 @@
+{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, OverloadedStrings,
+    QuasiQuotes, TypeFamilies #-}
+
 module Foundation where
 
 import Prelude
