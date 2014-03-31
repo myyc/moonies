@@ -24,7 +24,7 @@ $(function () {
             return "<li><span data-original-title=\"" + a.abbr + " (" + a.price
                 + ")\" class=\"tperc liperc "
                 + (a.ret >= 0 ? "greentotal" : "redtotal") + "\">"
-                + pc(a.ret) + "</span></li>";
+                + (a.ret >= 0 ? "+" : "") + pc(a.ret) + "</span></li>";
         });
         $("#rpercs").html(m.join(""));
 
