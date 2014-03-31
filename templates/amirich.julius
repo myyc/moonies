@@ -21,7 +21,8 @@ $(function () {
             rg = $(".rg"),
             orig = parseFloat(data.origsum);
         var m = _.map(data.spec, function (a) {
-            return "<li><span data-original-title=\"" + a.abbr + "\" class=\"tperc liperc "
+            return "<li><span data-original-title=\"" + a.abbr + " (" + a.price
+                + ")\" class=\"tperc liperc "
                 + (a.ret >= 0 ? "greentotal" : "redtotal") + "\">"
                 + pc(a.ret) + "</span></li>";
         });
