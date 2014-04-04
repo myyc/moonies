@@ -19,11 +19,13 @@ library
                      Settings
                      Settings.StaticFiles
                      Settings.Development
+                     Handler.Variables
                      Handler.AmIRich
                      Handler.Monies
                      Handler.Home
                      Handler.Funds
                      Handler.FundsTS
+                     Handler.ListFunds
                      Gatherers.Private
                      Gatherers.Morningstar
                      Gatherers.MongoDB
@@ -81,6 +83,7 @@ library
                  , HTTP                          >= 4000.0
                  , mongoDB                       >= 1.4
                  , bson                          >= 0.2
+                 , containers                    >= 0.5
 
 executable         moonies
     if flag(library-only)

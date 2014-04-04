@@ -1,0 +1,11 @@
+body {
+  background: #{darkGrey};
+  color: #{lightGrey};
+}
+
+.tooltip-inner {
+  color: #{lightGrey};
+  padding: 5px;
+  font-size: 20px;
+  font-weight: bold;
+}

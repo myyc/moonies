@@ -27,6 +27,7 @@ Warnings
 TODO
 ====
 
+* Page to manage funds.
 * Implement some "dummy data" interface so that other people can check this out.
 * ~~Caching, seriously, what the fuck.~~
 * Separate the foreign gathering function (it's not wise to insert things on refresh).

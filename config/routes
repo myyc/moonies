@@ -9,3 +9,4 @@
 
 /monies/#Text MoniesR GET
 /getfunds/#Text FundsTSR GET
+/listfunds ListFundsR GET
