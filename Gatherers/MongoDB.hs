@@ -4,8 +4,9 @@ module Gatherers.MongoDB where
 
 import Import
 import Database.MongoDB
+import Data.Bson as B (lookup)
 import Data.Maybe (catMaybes, fromMaybe)
-import Data.Time.Clock (getCurrentTime, diffUTCTime, UTCTime)
+import Data.Time (getCurrentTime, diffUTCTime, UTCTime)
 import qualified Data.Text as T
 import qualified Data.Map as M
 
@@ -13,7 +14,10 @@ import GHC.Generics (Generic)
 
 -- types
 
-data Figures = Figures {weig :: Double, eur :: Double, orig :: Double} deriving (Show, Generic)
+data Figures = Figures { weig :: Double
+                       , eur :: Double
+                       , orig :: Double} deriving (Show, Generic)
+
 instance FromJSON Figures
 instance ToJSON Figures
 
@@ -91,9 +95,9 @@ getAssets isin = do
   let f = case cur of
         Left _ -> []
         Right ds -> map (\d -> justFiguresify (getWeig d) (getEur d) (getOrig d)) ds
-          where getWeig d = cast' (valueAt "quotes" d) :: Maybe Double
-                getEur d = cast' (valueAt "jewgolds" d) :: Maybe Double
-                getOrig d = cast' (valueAt "origprice" d) :: Maybe Double
+          where getWeig d = B.lookup "quotes" d :: Maybe Double
+                getEur d = B.lookup "jewgolds" d :: Maybe Double
+                getOrig d = B.lookup "origprice" d :: Maybe Double
       a = catMaybes f
   return $ foldl sumFigures (Figures 0 0 0) a
     where sumFigures u v = Figures (weig u + weig v) (eur u + eur v) (weig u * orig u + weig v * orig v)
@@ -108,9 +112,9 @@ getOneFromMD isin = do
     Right d -> case d of
       Nothing -> Nothing
       Just d' -> justMDify (getName' d') (getAbbr' d') (getCurr' d')
-          where getName' m = cast' (valueAt "name" m) :: Maybe String
-                getAbbr' m = cast' (valueAt "abbr" m) :: Maybe String
-                getCurr' m = cast' (valueAt "currency" m) :: Maybe String
+          where getName' m = B.lookup "name" m :: Maybe String
+                getAbbr' m = B.lookup "abbr" m :: Maybe String
+                getCurr' m = B.lookup "currency" m :: Maybe String
 
 getAllFromMD :: IO (M.Map Text Metadata)
 getAllFromMD = do
@@ -125,10 +129,10 @@ getAllFromMD = do
               Just i -> case justMDify (getName' d) (getAbbr' d) (getCurr' d) of
                 Nothing -> Nothing
                 Just m -> Just (i, m)
-            getIsin' e = cast' (valueAt "isin" e) :: Maybe Text
-            getName' m = cast' (valueAt "name" m) :: Maybe String
-            getAbbr' m = cast' (valueAt "abbr" m) :: Maybe String
-            getCurr' m = cast' (valueAt "currency" m) :: Maybe String
+            getIsin' e = B.lookup "isin" e :: Maybe Text
+            getName' m = B.lookup "name" m :: Maybe String
+            getAbbr' m = B.lookup "abbr" m :: Maybe String
+            getCurr' m = B.lookup "currency" m :: Maybe String
 
 getAbbr :: Text -> IO Text
 getAbbr isin = do
@@ -152,10 +156,10 @@ getRows = do
     Left _ -> []
     Right ds -> map rowify ds
       where rowify d = justRowify (getIsin' d) (Just $ mname $ md d) (Just $ mabbr $ md d) (getEurs' d) (getQuotes' d) (getDate' d)
-            getIsin' e = cast' (valueAt "isin" e) :: Maybe Text
-            getQuotes' m = cast' (valueAt "quotes" m) :: Maybe Double
-            getEurs' m = cast' (valueAt "jewgolds" m) :: Maybe Double
-            getDate' m = cast' (valueAt "date" m) :: Maybe UTCTime
+            getIsin' e = B.lookup "isin" e :: Maybe Text
+            getQuotes' m = B.lookup "quotes" m :: Maybe Double
+            getEurs' m = B.lookup "jewgolds" m :: Maybe Double
+            getDate' m = B.lookup "date" m :: Maybe UTCTime
             md d = case getIsin' d of
               Nothing -> emptyMD
               Just i -> fromMaybe emptyMD $ M.lookup i mds

@@ -1,0 +1,28 @@
+#maincont {
+    margin-top: 100px;
+}
+
+.frow {
+    margin-bottom: 5px;
+}
+
+.fcol {
+    font-size: 18pt;
+    color: #{green};
+    font-weight: bold;
+    text-align: center;   
+}
+
+.rlink {
+    color: #{red};
+    cursor: pointer;
+}
+
+.rlink:hover {
+    text-decoration: none;
+    color: #{green};
+}
+
+.fttp {
+    cursor: pointer;
+}

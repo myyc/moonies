@@ -8,7 +8,6 @@ import Data.Time.Calendar (addDays)
 import Data.List (last)
 import Gatherers.Morningstar
 import Gatherers.MongoDB
-import Control.Concurrent (forkIO)
 
 import GHC.Generics (Generic)
 

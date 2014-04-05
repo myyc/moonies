@@ -9,4 +9,6 @@
 
 /monies/#Text MoniesR GET
 /getfunds/#Text FundsTSR GET
-/listfunds ListFundsR GET
+
+/portfolio PortfolioR GET
+/portfolio/delete/#Text/#Text DelFromPortfolioR GET

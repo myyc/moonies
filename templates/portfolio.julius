@@ -1,0 +1,3 @@
+$(function () {
+    $(".fttp").tooltip({placement: "right"});
+});

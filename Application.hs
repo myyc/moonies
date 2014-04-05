@@ -29,7 +29,8 @@ import Handler.Monies
 import Handler.Home
 import Handler.Funds
 import Handler.FundsTS
-import Handler.ListFunds
+import Handler.Portfolio
+import Handler.DelFromPortfolio
 
 -- This line actually creates our YesodDispatch instance. It is the second half
 -- of the call to mkYesodData which occurs in Foundation.hs. Please see the
