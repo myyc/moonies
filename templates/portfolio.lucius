@@ -10,6 +10,10 @@
     font-size: 18pt;
     color: #{green};
     font-weight: bold;
+    text-transform: uppercase;
+}
+
+.fc {
     text-align: center;   
 }
 
@@ -25,4 +29,33 @@
 
 .fttp {
     cursor: pointer;
+}
+
+.fform {
+    background-color: #{darkGrey};
+    outline: 0;
+    border: 0;
+    width: 100%;
+    line-height: 1;
+}
+
+.fvalid {
+    border-bottom: 2px solid #{green};
+}
+
+.fform:focus {
+    outline: 0;
+}
+
+#isinfield {
+    text-transform: uppercase;
+}
+
+.finvalid {
+    color: #{red};
+    border-bottom: 2px solid #{red};
+}
+
+#fsubb {
+    display: none;
 }

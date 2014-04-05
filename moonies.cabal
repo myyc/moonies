@@ -27,6 +27,7 @@ library
                      Handler.FundsTS
                      Handler.Portfolio
                      Handler.DelFromPortfolio
+                     Handler.AddToPortfolio
                      Gatherers.Private
                      Gatherers.Morningstar
                      Gatherers.MongoDB
