@@ -11,6 +11,8 @@ import qualified Data.Map as M
 
 import GHC.Generics (Generic)
 
+-- types
+
 data Figures = Figures {weig :: Double, eur :: Double, orig :: Double} deriving (Show, Generic)
 instance FromJSON Figures
 instance ToJSON Figures
@@ -18,35 +20,35 @@ instance ToJSON Figures
 justFiguresify :: Maybe Double -> Maybe Double -> Maybe Double -> Maybe Figures
 justFiguresify w e o = Figures <$> w <*> e <*> o
 
-data Metadata = Metadata { mquotes :: Double
-                         , mname :: String
+data Metadata = Metadata { mname :: String
                          , mabbr :: String
                          , mcurr :: String
-                         }
+                         } deriving (Show)
 
-justMDify :: Maybe Double -> Maybe String -> Maybe String -> Maybe String -> Maybe Metadata
-justMDify q n a c = Metadata <$> q <*> n <*> a <*> c
+justMDify :: Maybe String -> Maybe String -> Maybe String -> Maybe Metadata
+justMDify n a c = Metadata <$> n <*> a <*> c
 
 emptyMD :: Metadata
-emptyMD = Metadata 0.0 "" "" ""
+emptyMD = Metadata "" "" ""
 
 data Row = Row { risin :: Text
                , rname :: String
                , rabbr :: String
                , reurs :: Double
                , rquotes :: Double
-               , rdate :: String
+               , rdate :: UTCTime
                } deriving (Show, Generic)
 
 instance FromJSON Row
 instance ToJSON Row
 
-justRowify :: Maybe Text -> Maybe String -> Maybe String -> Maybe Double -> Maybe Double -> Maybe String -> Maybe Row
-justRowify i n a e q c = Row <$> i <*> n <*> a <*> e <*> q <*> c
+justRowify :: Maybe Text -> Maybe String -> Maybe String -> Maybe Double -> Maybe Double -> Maybe UTCTime -> Maybe Row
+justRowify i n a e q d = Row <$> i <*> n <*> a <*> e <*> q <*> d
+
+-- end types
 
 getConnection :: IO Pipe
 getConnection = (runIOE . connect . host) "127.0.0.1"
-
 
 -- gets output from the funds.private collection.
 -- sample doc:
@@ -105,11 +107,10 @@ getOneFromMD isin = do
     Left _ -> Nothing
     Right d -> case d of
       Nothing -> Nothing
-      Just d' -> justMDify (getQuotes' d') (getName' d') (getAbbr' d') (getCurr' d')
-          where getQuotes' m = cast' (valueAt "quotes" m) :: Maybe Double
-                getName' m = cast' (valueAt "name" m) :: Maybe String
+      Just d' -> justMDify (getName' d') (getAbbr' d') (getCurr' d')
+          where getName' m = cast' (valueAt "name" m) :: Maybe String
                 getAbbr' m = cast' (valueAt "abbr" m) :: Maybe String
-                getCurr' m = cast' (valueAt "curr" m) :: Maybe String
+                getCurr' m = cast' (valueAt "currency" m) :: Maybe String
 
 getAllFromMD :: IO (M.Map Text Metadata)
 getAllFromMD = do
@@ -121,14 +122,13 @@ getAllFromMD = do
     Right ds -> (M.fromList . catMaybes) (map tuplify ds)
       where tuplify d = case getIsin' d of
               Nothing -> Nothing
-              Just i -> case justMDify (getQuotes' d) (getName' d) (getAbbr' d) (getCurr' d) of
+              Just i -> case justMDify (getName' d) (getAbbr' d) (getCurr' d) of
                 Nothing -> Nothing
                 Just m -> Just (i, m)
             getIsin' e = cast' (valueAt "isin" e) :: Maybe Text
-            getQuotes' m = cast' (valueAt "quotes" m) :: Maybe Double
             getName' m = cast' (valueAt "name" m) :: Maybe String
             getAbbr' m = cast' (valueAt "abbr" m) :: Maybe String
-            getCurr' m = cast' (valueAt "curr" m) :: Maybe String
+            getCurr' m = cast' (valueAt "currency" m) :: Maybe String
 
 getAbbr :: Text -> IO Text
 getAbbr isin = do
@@ -148,19 +148,17 @@ getRows :: IO [Row]
 getRows = do
   mds <- getAllFromMD
   cur <- dumpPrivate
-  return $ case cur of
+  return $ catMaybes $ case cur of
     Left _ -> []
-    Right ds -> catMaybes $ map rowify ds
+    Right ds -> map rowify ds
       where rowify d = justRowify (getIsin' d) (Just $ mname $ md d) (Just $ mabbr $ md d) (getEurs' d) (getQuotes' d) (getDate' d)
             getIsin' e = cast' (valueAt "isin" e) :: Maybe Text
             getQuotes' m = cast' (valueAt "quotes" m) :: Maybe Double
             getEurs' m = cast' (valueAt "jewgolds" m) :: Maybe Double
-            getDate' m = cast' (valueAt "date" m) :: Maybe String
+            getDate' m = cast' (valueAt "date" m) :: Maybe UTCTime
             md d = case getIsin' d of
               Nothing -> emptyMD
-              Just i -> case M.lookup i mds of
-                Nothing -> emptyMD
-                Just md' -> md'
+              Just i -> fromMaybe emptyMD $ M.lookup i mds
 
 -- cache! it's shit, but it works now. until i expand the mining section.
 validateDoc :: Document -> UTCTime -> Maybe [[Double]]
