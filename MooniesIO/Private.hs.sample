@@ -2,7 +2,7 @@
 -- time to time. rename this to Private.hs otherwise ghc will scream.
 -- don't put anything too secret here, obviously.
 
-module Gatherers.Private where
+module MooniesIO.Private where
 
 import Import
 

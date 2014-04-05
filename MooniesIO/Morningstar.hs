@@ -1,16 +1,16 @@
 {-# LANGUAGE DeriveGeneric #-}
 
-module Gatherers.Morningstar where
+module MooniesIO.Morningstar where
 
 import Import
-import Gatherers.Private
+import MooniesIO.Private
 
 import Data.Time.Format (formatTime, FormatTime)
 import System.Locale (defaultTimeLocale)
 import qualified Data.Text as T
 import Network.HTTP as H (simpleHTTP, getRequest, getResponseBody)
 import Prelude (init, tail, head)
-import Gatherers.MongoDB (getCachedTS, cacheTS)
+import MooniesIO.MongoDB (getCachedTS, cacheTS)
 
 import GHC.Generics (Generic)
 

@@ -1,12 +1,14 @@
-User
-    ident Text
-    password Text Maybe
-    UniqueUser ident
-    deriving Typeable
-Email
-    email Text
-    user UserId Maybe
-    verkey Text Maybe
-    UniqueEmail email
-
- -- By default this file is used in Model.hs (which is imported by Foundation.hs)
+Order
+    isin Text
+    quotes Double
+    jewgolds Double
+    origprice Double
+    date UTCTime
+    deriving Show
+Metadata
+    isin Text
+    name Text
+    abbr Text
+    currency Text
+    MDIsin isin
+    deriving Show

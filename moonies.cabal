@@ -28,9 +28,9 @@ library
                      Handler.Portfolio
                      Handler.DelFromPortfolio
                      Handler.AddToPortfolio
-                     Gatherers.Private
-                     Gatherers.Morningstar
-                     Gatherers.MongoDB
+                     MooniesIO.Private
+                     MooniesIO.Morningstar
+                     MooniesIO.MongoDB
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT

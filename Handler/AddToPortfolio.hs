@@ -15,7 +15,7 @@ getAddToPortfolioR = defaultLayout $ do
               <div class="col-lg-11">
               <div class="col-lg-1 fcol">
                  <a href="/portfolio" class="rlink">X
-           <form id="fmf" action="/portfolio/add/data" method="post">
+           <form id="fmf" action="@{AddToPortfolioR}" method="post">
               <div class="row frow">
                  <div class="col-lg-3 fcol">ISIN
                  <div class="col-lg-7 fcol">

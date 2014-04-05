@@ -27,7 +27,9 @@ Warnings
 TODO
 ====
 
-* Page to manage funds.
+* Page to manage funds: ~~list~~ + form (almost done, inserts missing).
+* ~~Rewrite the whole MongoDB infrastructure using the Persist API.~~ Almost done, I'll
+  refactor it when I'm less drunk.
 * Implement some "dummy data" interface so that other people can check this out.
 * ~~Caching, seriously, what the fuck.~~
 * Separate the foreign gathering function (it's not wise to insert things on refresh).

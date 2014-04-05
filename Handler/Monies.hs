@@ -6,8 +6,8 @@ import Import
 import Data.Time.Clock (utctDay, getCurrentTime)
 import Data.Time.Calendar (addDays)
 import Data.List (last)
-import Gatherers.Morningstar
-import Gatherers.MongoDB
+import MooniesIO.Morningstar
+import MooniesIO.MongoDB
 
 import GHC.Generics (Generic)
 
@@ -21,23 +21,23 @@ instance ToJSON AbbRet
 
 getMoniesR :: Text -> Handler Import.Value
 getMoniesR curr = do
-  isins <- liftIO getIsins
-  let getAbbrAndRet isin'' = do
-        asset <- getAssets isin''
-        abbr' <- getAbbr isin''
-        curr' <- getCurr isin''
-        price' <- getLastPrice curr' isin''
+  stuff <- getJoined
+  let getAbbrAndRet (order, md) = do
+        let isin' = orderIsin order
+        asset <- getAssets isin'
+        price' <- liftIO $ getLastPrice (metadataCurrency md) isin'
         let bef = orig asset
             aft = weig asset * price'
-        return $ AbbRet isin'' abbr' ((aft-bef)/aft) price'
-  let getSum isin'' = do
-        asset <- getAssets isin''
-        price' <- getLastPrice curr isin''
+        return $ AbbRet isin' (metadataAbbr md) ((aft-bef)/aft) price'
+  let getSum (order, _) = do
+        let isin' = orderIsin order
+        asset <- getAssets isin'
+        price' <- liftIO $ getLastPrice curr isin'
         return $ weig asset * price'
-  a <- liftIO $ mapM getAbbrAndRet isins
-  b <- liftIO $ mapM getSum isins
-  origsum' <- liftIO getOrigSum
-  return $ toJSON $ Monies (sum b) origsum' a
+  abbrets <- mapM getAbbrAndRet stuff
+  o <- mapM (\(order, md) -> return $ orderJewgolds order) stuff
+  c <- mapM getSum stuff
+  return $ toJSON $ Monies (sum c) (sum o) abbrets
 
 getLastPrice :: Text -> Text -> IO Double
 getLastPrice curr isin' = do
