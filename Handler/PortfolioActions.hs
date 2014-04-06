@@ -1,15 +1,41 @@
-module Handler.AddToPortfolio where
+module Handler.PortfolioActions where
 
 import Import
 import Handler.Variables
+import Data.Time (UTCTime)
+import qualified Data.Text as T (unpack)
+
+data AddResult = AddResult
+                 { resIsin :: Text
+                 , resName :: Text
+                 , resAbbr :: Text
+                 , resQuotes :: Double
+                 , resEurs :: Double
+                 , resPrice :: Double
+                 , resCurr :: Text
+                 , resDate :: Text
+                 } deriving (Show)
+
+getAbbrForIsinR :: Text -> Handler Import.Value
+getAbbrForIsinR isin = do
+  md <- runDB $ getBy $ MDIsin isin
+  let doc = case md of
+        Nothing -> Metadata "" "" "" ""
+        Just (Entity _ d) -> d
+  return $ toJSON doc
+
+getDelFromPortfolioR :: Text -> Text -> Handler Html
+getDelFromPortfolioR isin date = do
+  let time = read (T.unpack date) :: UTCTime
+  _ <- runDB $ deleteBy $ OrderID isin time
+  redirect PortfolioR
 
 getAddToPortfolioR :: Handler Html
 getAddToPortfolioR = defaultLayout $ do
   setTitle "Add"
   headWidget
   $(widgetFile "portfolio")
-  toWidgetBody
-     [hamlet|
+  toWidgetBody [hamlet|
         <div class="container" id="maincont">
            <div class="row frow">
               <div class="col-lg-11">
@@ -28,7 +54,7 @@ getAddToPortfolioR = defaultLayout $ do
                  <div class="col-lg-3 fcol">Abbreviation
                  <div class="col-lg-7 fcol">
                     <input class="fform fstring finvalid fnabbr" type="text" name="abbr" id="abbrfield">
-              <div class="row frow">
+              <div class="row frow" style="margin-top: 20pt">
                  <div class="col-lg-3 fcol">Quotes
                  <div class="col-lg-7 fcol">
                     <input class="fform fnum finvalid" type="text" name="quotes">

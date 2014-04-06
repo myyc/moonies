@@ -21,14 +21,10 @@ library
                      Settings.Development
                      Handler.Variables
                      Handler.AmIRich
-                     Handler.Monies
                      Handler.Home
                      Handler.Funds
-                     Handler.FundsTS
                      Handler.Portfolio
-                     Handler.DelFromPortfolio
-                     Handler.AddToPortfolio
-                     Handler.AbbrForIsin
+                     Handler.PortfolioActions
                      MooniesIO.Private
                      MooniesIO.Morningstar
                      MooniesIO.MongoDB

@@ -12,5 +12,5 @@
 
 /portfolio PortfolioR GET
 /portfolio/delete/#Text/#Text DelFromPortfolioR GET
-/portfolio/add AddToPortfolioR GET
+/portfolio/add AddToPortfolioR GET 
 /portfolio/abbrforisin/#Text AbbrForIsinR GET
