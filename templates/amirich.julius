@@ -15,7 +15,7 @@ $(function () {
     };
 
     startoverlay();
-    $.getJSON("/monies/" + curr,function (data) {
+    $.getJSON("/monies/currency/" + curr,function (data) {
         var tot = parseFloat(data.currsum),
             v = parseInt(parseFloat(data.currsum) * 100) / 100.,
             rg = $(".rg"),
