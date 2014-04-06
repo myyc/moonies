@@ -4,9 +4,8 @@ module MooniesIO.MongoDB where
 
 import Import
 import Database.MongoDB
-import Data.Maybe (catMaybes, fromMaybe)
+import Data.Maybe (fromMaybe)
 import Data.Time (getCurrentTime, diffUTCTime, UTCTime)
-import qualified Data.Text as T
 import qualified Data.Map as M
 
 import GHC.Generics (Generic)

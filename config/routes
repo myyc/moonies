@@ -7,9 +7,10 @@
 /amirich/#Text AmIRichR GET
 /funds/#Text FundsR GET
 
-/monies/#Text MoniesR GET
-/getfunds/#Text FundsTSR GET
+/monies/currency/#Text MoniesR GET
+/monies/data/currency/#Text FundsTSR GET
 
 /portfolio PortfolioR GET
 /portfolio/delete/#Text/#Text DelFromPortfolioR GET
 /portfolio/add AddToPortfolioR GET
+/portfolio/abbrforisin/#Text AbbrForIsinR GET

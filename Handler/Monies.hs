@@ -35,7 +35,7 @@ getMoniesR curr = do
         price' <- liftIO $ getLastPrice curr isin'
         return $ weig asset * price'
   abbrets <- mapM getAbbrAndRet stuff
-  o <- mapM (\(order, md) -> return $ orderJewgolds order) stuff
+  o <- mapM (\(order, _) -> return $ orderJewgolds order) stuff
   c <- mapM getSum stuff
   return $ toJSON $ Monies (sum c) (sum o) abbrets
 

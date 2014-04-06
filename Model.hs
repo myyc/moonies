@@ -1,5 +1,5 @@
 {-# LANGUAGE QuasiQuotes, TypeFamilies, GeneralizedNewtypeDeriving, TemplateHaskell,
-    OverloadedStrings, GADTs #-}
+    OverloadedStrings, GADTs, DeriveGeneric #-}
 
 module Model where
 
@@ -11,6 +11,7 @@ import Database.Persist.MongoDB hiding (master)
 import Language.Haskell.TH.Syntax
 --import Data.Typeable (Typeable)
 import Data.Time
+import GHC.Generics (Generic)
 
 -- You can define all of your database entities in the entities file.
 -- You can find more information on persistent and how to declare entities
@@ -22,3 +23,5 @@ let mongoSettings = (mkPersistSettings (ConT ''MongoBackend))
                         }
  in share [mkPersist mongoSettings]
     $(persistFileWith lowerCaseSettings "config/models")
+
+instance ToJSON Metadata

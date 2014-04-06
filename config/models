@@ -4,6 +4,7 @@ Order
     jewgolds Double
     origprice Double
     date UTCTime
+    OrderID isin date
     deriving Show
 Metadata
     isin Text
@@ -12,3 +13,4 @@ Metadata
     currency Text
     MDIsin isin
     deriving Show
+    deriving Generic

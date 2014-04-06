@@ -42,9 +42,30 @@ $(function () {
         if(valid) {
             me.addClass("fvalid");
             me.removeClass("finvalid");
+
+            if(me.attr("id") == "isinfield") {
+                var isin = me.val();
+                $.getJSON("/portfolio/abbrforisin/" + isin, function(data) {
+                    var abbr = data["metadataAbbr"],
+                        name = data["metadataName"];
+
+                    if(abbr != "") {
+                        $("#namefield").val(name);
+                        $("#abbrfield").val(abbr);
+                        $(".fnabbr").prop("disabled", true);
+                        $(".fnabbr").addClass("fvalid");
+                        $(".fnabbr").removeClass("finvalid");
+                        $(".fnabbr").addClass("ffrozen");
+                    }
+                });
+            }
         } else {
             me.addClass("finvalid");
             me.removeClass("fvalid");
+            if(me.attr("id") == "isinfield") {
+                $(".fnabbr").prop("disabled", false);
+                $(".fnabbr").removeClass("ffrozen");
+            }
         }
 
         if($(".finvalid").length == 0) {
@@ -72,6 +93,12 @@ $(function () {
         var val = $(this).val().toUpperCase(),
             me = $(this);
         redgreen(me, isnumber(val));
+    });
+
+    $(".fdate").on("input", function() {
+        var val = $(this).val().toUpperCase(),
+            me = $(this);
+        redgreen(me, !isNaN(Date.parse(val)));
     });
 
     subb.click(function() {

@@ -28,6 +28,7 @@ library
                      Handler.Portfolio
                      Handler.DelFromPortfolio
                      Handler.AddToPortfolio
+                     Handler.AbbrForIsin
                      MooniesIO.Private
                      MooniesIO.Morningstar
                      MooniesIO.MongoDB

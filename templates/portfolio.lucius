@@ -56,6 +56,11 @@
     border-bottom: 2px solid #{red};
 }
 
+.ffrozen {
+    color: #{lightGrey};
+    border-bottom: 2px solid #{lightGrey};
+}
+
 #fsubb {
     display: none;
 }

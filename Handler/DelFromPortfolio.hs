@@ -7,6 +7,5 @@ import qualified Data.Text as T (unpack)
 getDelFromPortfolioR :: Text -> Text -> Handler Html
 getDelFromPortfolioR isin date = do
   let time = read (T.unpack date) :: UTCTime
-  liftIO $ print isin
-  liftIO $ print time
+  _ <- runDB $ deleteBy $ OrderID isin time
   redirect PortfolioR
