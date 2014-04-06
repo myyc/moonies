@@ -9,11 +9,11 @@ even half of the functionality the Python version has we'll all have a party.~~
 A sandbox to monitor a bunch of crap (funds, stocks (maybe)). The idea is to evolve it into
 some sort of portfolio monitoring tool with maybe something to do with forecasting etc.
 
-Dependencies are listed in the cabal file. Nothing dreadful anyway:
+Dependencies are listed in the cabal file. Only one foreign dependency:
 
-* Yesod
 * MongoDB (tested with >= 2.4)
-* Other things
+
+It's a Yesod project so you should have the Haskell Platform installed.
 
 Warnings
 ========
@@ -30,7 +30,6 @@ TODO
 * Page to manage funds: ~~list~~ + form (almost done, inserts missing).
 * ~~Rewrite the whole MongoDB infrastructure using the Persist API.~~ Almost done, I'll
   refactor it when I'm less drunk.
-* Implement some "dummy data" interface so that other people can check this out.
 * ~~Caching, seriously, what the fuck.~~
 * Separate the foreign gathering function (it's not wise to insert things on refresh).
 * Fix flymake.
