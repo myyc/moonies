@@ -8,17 +8,21 @@
   line-height: 1;
 }
 
-#bigdiff {
-    font-size: 170px;
+#ldiff {
+    font-size: 80px;
     font-weight: bold;
     line-height: 1;
 }
 
-row.mid {
-    margin-top: 180px;
+#lperc {
+    line-height: 1;
 }
 
-span.perc {
+#mid {
+    margin-top: 30px;
+}
+
+li.perc {
   font-weight: bold;
   font-size: 140px;
 }
@@ -36,7 +40,7 @@ span.tperc {
   color: #{green};
 }
 
-#rpercs {
+#llist, #rpercs {
   list-style-type: none;
   top: 0;
   line-height: 1;

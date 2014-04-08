@@ -56,11 +56,11 @@ getAmIRichR curr = defaultLayout $ do
         <div class="container" id="maincont">
            <div class="row main text-center">
               <span class="rg" id="bigtotal">
-           <div class="row text-center">
-              <span class="rg" id="bigdiff">
            <div class="row" id="mid">
                <div class="col-lg-6 text-center" id="lcol">
-                  <span class="rg perc" id="lperc">
+                  <ul id="llist">
+                     <li class="rg perc" id="lperc">
+                     <li class="rg" id="ldiff">
                <div class="col-lg-6 text-center" id="rcol">
                   <ul id="rpercs">
             |]

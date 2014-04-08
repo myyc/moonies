@@ -38,8 +38,8 @@ $(function () {
             }
         }
         $("#bigtotal").html(curs["EUR"](v));
-        $("#bigdiff").html(curs["EUR"](parseInt(100*(v-orig))/100));
         $("#lperc").html(curr == "EUR" ? pc((tot - orig) / orig) : "–");
+        $("#ldiff").html(curs["EUR"](parseInt(100*(v-orig))/100));
     }).promise().done(function () {
         var m = $("#lcol").height() - $("#rcol").height();
         $(m >= 0 ? "#rcol" : "#lcol").css({"padding-top": 0.5 * (m >= 0 ? m : -m) + "px"});
