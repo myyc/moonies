@@ -1,10 +1,21 @@
 .main {
-  padding-top: 100px;
+  padding-top: 130px;
 }
 
 #bigtotal {
   font-weight: bold;
   font-size: 250px;
+  line-height: 1;
+}
+
+#bigdiff {
+    font-size: 170px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+row.mid {
+    margin-top: 180px;
 }
 
 span.perc {

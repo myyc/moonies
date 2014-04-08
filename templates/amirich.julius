@@ -38,6 +38,7 @@ $(function () {
             }
         }
         $("#bigtotal").html(curs["EUR"](v));
+        $("#bigdiff").html(curs["EUR"](parseInt(100*(v-orig))/100));
         $("#lperc").html(curr == "EUR" ? pc((tot - orig) / orig) : "–");
     }).promise().done(function () {
         var m = $("#lcol").height() - $("#rcol").height();
